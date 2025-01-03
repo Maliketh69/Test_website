@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .question-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-image {
+            max-width: 300px;
+            max-height: 200px;
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 40%;
+            position: relative;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            border: 2px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            position: absolute;
+        }
+
+        #yes-button {
+            background-color: lightgreen;
+            color: white;
+            left: 10%;
+        }
+
+        #no-button {
+            background-color: lightcoral;
+            color: white;
+            right: 10%;
+        }
+
+        #read-more-button {
+            background-color: #ffb3b3;
+            color: white;
+            display: none;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #sorry-message {
+            font-size: 2em;
+            color: rgb(238, 81, 81);
+            margin-top: 20px;
+            display: none;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        #sorry-image {
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        #modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+        }
+
+        #modal h2 {
+            margin-top: 0;
+        }
+
+        #modal p {
+            font-size: 1.2em;
+        }
+
+        #modal-close {
+            background-color: crimson;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            float: right;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="question-box">
+        <img id="question-image" class="question-image" src="" alt="Question Image">
+        <p id="question-text">Loading question...</p>
+    </div>
+    <div class="button-container">
+        <div id="yes-button" class="button">Yes</div>
+        <div id="no-button" class="button">No</div>
+    </div>
+    <div id="sorry-message">
+        <img id="sorry-image" src="images/sad.jpeg" alt="Sorry Image">
+        <p>I'm Sorry</p>
+    </div>
+    <button id="read-more-button">Read More</button>
+
+    <!-- Modal -->
+    <div id="overlay"></div>
+    <div id="modal">
+        <h2>Dear Neeharika</h2>
+        <p>
+            I’m truly sorry for everything I said or did that hurt you.
+            It was never my intention to cause you pain or make you feel uncomfortable in any way.
+            I deeply regret my words and actions, and I wish I could take them back to ease the hurt I’ve caused.
+            Please know that all I ever wanted was to be there for you and support you.
+        </p>
+        <button id="modal-close">Close</button>
+    </div>
+
+    <script>
+        const questions = [
+            { text: "Do I sometimes say the wrong things and hurt you?", images: "images/image1.jpg" },
+            { text: "Do I make mistakes that disappoint you?", images: "images/image2.jpg" },
+            { text: "Do I frustrate you with my assumptions about things?", images: "images/image3.jpg" },
+            { text: "Do I ever let you down even though I don’t mean to?", images: "images/image4.jpg" },
+            { text: "Do I sometimes fail to see things from your perspective?", images: "images/image5.jpg" },
+        ];
+
+        let currentQuestion = 0;
+        const questionText = document.getElementById("question-text");
+        const questionImage = document.getElementById("question-image");
+        const yesButton = document.getElementById("yes-button");
+        const noButton = document.getElementById("no-button");
+        const sorryMessage = document.getElementById("sorry-message");
+        const readMoreButton = document.getElementById("read-more-button");
+        const modal = document.getElementById("modal");
+        const overlay = document.getElementById("overlay");
+        const modalClose = document.getElementById("modal-close");
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionText.textContent = question.text;
+            questionImage.src = question.images;
+            questionImage.alt = question.text;
+        }
+
+        function moveNoButton(e) {
+            const noRect = noButton.getBoundingClientRect();
+            const buttonWidth = noRect.width;
+            const buttonHeight = noRect.height;
+
+            const xDiff = e.clientX - (noRect.left + buttonWidth / 2);
+            const yDiff = e.clientY - (noRect.top + buttonHeight / 2);
+            const distance = Math.sqrt(xDiff ** 2 + yDiff ** 2);
+
+            if (distance < 100) {
+                const angle = Math.atan2(yDiff, xDiff);
+                const moveX = Math.cos(angle) * 150;
+                const moveY = Math.sin(angle) * 150;
+
+                let newX = noRect.left + moveX;
+                let newY = noRect.top + moveY;
+
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+
+                if (newX < 0) newX = 0;
+                if (newY < 0) newY = 0;
+                if (newX + buttonWidth > windowWidth) newX = windowWidth - buttonWidth;
+                if (newY + buttonHeight > windowHeight) newY = windowHeight - buttonHeight;
+
+                noButton.style.transform = `translate(${newX - noRect.left}px, ${newY - noRect.top}px)`;
+            }
+        }
+
+        noButton.addEventListener("mouseenter", (e) => moveNoButton(e));
+        noButton.addEventListener("mousemove", (e) => moveNoButton(e));
+
+        yesButton.addEventListener("click", () => {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                questionText.textContent = "";
+                questionImage.style.display = "none";
+                yesButton.style.display = "none";
+                noButton.style.display = "none";
+                sorryMessage.style.display = "block";
+                readMoreButton.style.display = "block";
+            }
+        });
+
+        readMoreButton.addEventListener("click", () => {
+            overlay.style.display = "block";
+            modal.style.display = "block";
+        });
+
+        modalClose.addEventListener("click", () => {
+            overlay.style.display = "none";
+            modal.style.display = "none";
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>

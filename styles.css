@@ -1,0 +1,148 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    text-align: center; /* Center text */
+    cursor: default; /* Normal cursor */
+    
+}
+
+.hero {
+    background-image: url('images/42.jpg'); /* Parallax background image */
+    background-attachment: fixed; /* Parallax effect */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the background image */
+    height: 100vh; /* Full height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.portfolio {
+    padding: 50px 20px; /* Padding for section */
+    background-color: rgb(253, 241, 186); /* Background for visibility */
+    position: relative;
+    z-index: 1; /* For positioning drawing */
+}
+
+h1 {
+    font-size: 2.5em;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+p {
+    font-size: 1.2em;
+}
+
+.gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px; /* Space between gallery items */
+    margin-bottom: 50px; /* Add margin for spacing */
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden; /* Hide overflow for image scaling */
+    opacity: 0; /* Start as invisible */
+    transform: translateY(20px); /* Start slightly below */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for smooth effect */
+    max-width: 300px; /* Set a max width for gallery items */
+    cursor: pointer; /* Indicate clickable */
+}
+
+.gallery-item img {
+    width: 100%; /* Make images responsive */
+    height: auto; /* Maintain aspect ratio */
+    transition: transform 0.5s ease; /* Transition for scaling */
+}
+
+.gallery-item:hover img {
+    transform: scale(1.2); /* Increase the scale factor for a more pronounced zoom */
+}
+
+/* Fade in effect */
+.scroll-in {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Back to original position */
+}
+
+.about {
+    text-align: center;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.8); /* Black background with opacity */
+    text-align: center; /* Center text in modal */
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%; /* Responsive image */
+    max-height: 80%; /* Responsive image */
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.image-description {
+    color: #fff; /* White text for contrast */
+    margin-top: 20px; /* Spacing from the image */
+    font-size: 1.2em; /* Font size for the description */
+}
+
+.cursor {
+    position: absolute;
+    width: 20px; /* Set the width of the cursor */
+    height: 20px; /* Set the height of the cursor */
+    background-color: rgba(255, 182, 193, 0.8); /* Cursor color */
+    border-radius: 50%; /* Make it circular */
+    transform: translate(-50%, -50%); /* Center the cursor */
+    pointer-events: none; /* Prevent interference with mouse events */
+    z-index: 100; /* Ensure it's above other elements */
+    display: none; /* Hide the custom cursor by default */
+}
+
+/* Update the trail style as needed */
+
+
+@keyframes fadeOut {
+    to {
+        opacity: 0; /* Fade to transparent */
+        transform: scale(.5); /* Optional: slightly scale up during fade */
+    }
+}
+
+#drawingCanvas {
+    position: absolute; /* Keep this as is */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto; /* Enable interactions */
+    z-index: 10; /* Ensure it's higher than .portfolio */
+}
